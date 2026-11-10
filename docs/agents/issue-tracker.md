@@ -8,7 +8,7 @@ All active issues, specs and wayfinder maps live in [Benson-mk/astrago GitHub Is
 
 GitHub is the source of truth for issue history, decisions and current progress. The former local tracker and temporary audit folders are not part of the working tree. Original handoff documents remain in the local source checkout.
 
-GPU connection settings are kept in the ignored root `.gpu-node.json`; private connection information must stay out of commits and public issues.
+GPU connection settings are kept in ignored `.local/gpu-node.json`; private connection information must stay out of commits and public issues.
 
 ## Issue operations
 
