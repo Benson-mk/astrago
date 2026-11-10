@@ -7,9 +7,17 @@ A controlled study of selecting Go positions for a pretrained student, with offl
 **Teacher**: The frozen expert Go model and declared analysis settings used to supply numerical supervision. Its estimates are evidence with bounded search, not ground truth.
 _Avoid_: Astra as numerical teacher
 
-**Student**: The shared pretrained Go model whose continuation learning is compared across selection arms.
+**Student**: A Go model initialized from the common pretrained checkpoint and continued within one selection arm.
+
+**Selection arm**: An experimental condition defined by a position-selection method and the student learning from its selections.
 
 **Selector**: A method that chooses legal positions from the common candidate pool under a declared information and cost budget.
+
+**Selection round**: One cycle of choosing training positions and continuing an arm's student on selected data.
+
+**Adaptive curriculum**: A sequence of position selections informed by feedback from the student's learning.
+
+**Cumulative training set**: The union of an arm's selected positions across its selection rounds.
 
 **Game family**: A source game together with its duplicate records and related variations or descendants. Shared opening moves alone do not establish a common family.
 
@@ -17,7 +25,7 @@ _Avoid_: Astra as numerical teacher
 
 **Raw-value target**: The frozen teacher network's pre-search win, loss and no-result probabilities for a position, expressed from the player-to-move perspective.
 
-**Astra proposal**: A reproducible selection rule or curriculum suggested from allowed development evidence. It is neither a numerical label nor proof of move quality.
+**Astra proposal**: A structured position-selection specification suggested from allowed development evidence. It is neither a numerical label nor proof of move quality.
 
 **Development set**: Positions available for diagnosing errors, designing selection and tuning the experiment before the final evaluation.
 
