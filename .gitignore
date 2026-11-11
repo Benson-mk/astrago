@@ -1,3 +1,8 @@
 # Private machine connection details and local observations.
 /.local/
 /.gpu-node.json
+
+# Python caches and local E2E/typecheck output.
+__pycache__/
+*.py[cod]
+.mypy_cache/
