@@ -21,6 +21,8 @@ _Avoid_: Astra as numerical teacher
 
 **Game family**: A source game together with its duplicate records and related variations or descendants. Shared opening moves alone do not establish a common family.
 
+**Family pair**: Two evaluation games starting from the same legal history of one game family, with the compared students swapping colors. The pair is one evaluation unit, not two independent observations.
+
 **Search-policy target**: A move distribution formed by normalizing the frozen teacher's search edge visits, including pass. It is the study's declared distillation target, not a claim of equivalence to native self-play targets.
 
 **Raw-value target**: The frozen teacher network's pre-search win, loss and no-result probabilities for a position, expressed from the player-to-move perspective.
