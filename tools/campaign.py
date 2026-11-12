@@ -387,6 +387,28 @@ def verify(root: Path) -> dict[str, Any]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest='operation', required=True)
+    p = sub.add_parser('data-plan'); p.add_argument('--output', type=Path, required=True)
+    p = sub.add_parser('data-admit'); p.add_argument('--manifest', type=Path, required=True)
+    p.add_argument('--output', type=Path, required=True)
+    p.add_argument('--public-output', type=Path, required=True); p.add_argument('--instruction')
+    p = sub.add_parser('data-check-native'); p.add_argument('--native-lock', type=Path, required=True)
+    p.add_argument('--output', type=Path, required=True); p.add_argument('--instruction')
+    p = sub.add_parser('data-check-access'); p.add_argument('--run', type=Path, required=True)
+    p.add_argument('--export-id'); p.add_argument('--output', type=Path, required=True)
+    p = sub.add_parser('data-freeze-fixtures'); p.add_argument('--artifact', type=Path, required=True)
+    p.add_argument('--access-receipt', type=Path, required=True)
+    p.add_argument('--review', type=Path, required=True); p.add_argument('--public-output', type=Path, required=True)
+    p.add_argument('--instruction')
+    p = sub.add_parser('data-build'); p.add_argument('--source', type=Path, required=True)
+    p.add_argument('--output', type=Path, required=True); p.add_argument('--native-parent', type=Path, required=True)
+    p.add_argument('--instruction')
+    p = sub.add_parser('data-verify'); p.add_argument('--artifact', type=Path, required=True)
+    p.add_argument('--offline', action='store_true', required=True)
+    p = sub.add_parser('data-inputs'); p.add_argument('--run', type=Path, required=True)
+    p.add_argument('--bundle', type=Path); p.add_argument('--split', required=True)
+    p.add_argument('--export-id'); p.add_argument('--purpose', default='debugging')
+    p.add_argument('--arm', choices=['A', 'B', 'C']); p.add_argument('--arm-state', type=Path)
+    p.add_argument('--candidate-id', action='append')
     p = sub.add_parser('plan'); p.add_argument('--output', type=Path, required=True)
     p = sub.add_parser('inventory'); p.add_argument('--output', type=Path, required=True)
     p = sub.add_parser('start'); p.add_argument('--manifest', type=Path, required=True)
@@ -406,7 +428,10 @@ def main() -> int:
     args = parser.parse_args()
     result: dict[str, Any]
     try:
-        if args.operation == 'plan':
+        if args.operation.startswith('data-'):
+            from admission import dispatch
+            result = dispatch(args)
+        elif args.operation == 'plan':
             exclusive(args.output, encoded(plan())); result = {'manifest': str(args.output)}
         elif args.operation == 'inventory':
             result = {'schema': 'astrago-coordinator-inventory-v1', 'role': 'coordinator',
@@ -426,7 +451,7 @@ def main() -> int:
         else:
             result = verify(args.run)
         print(json.dumps(result, sort_keys=True))
-        return 0 if result.get('status') not in ['fail', 'inconclusive'] else 1
+        return 1 if result.get('status') in ['fail', 'inconclusive'] or (args.operation.startswith('data-') and result.get('status') == 'incomplete') else 0
     except (ValueError, OSError, KeyError, TypeError) as error:
         print(json.dumps({'status': 'fail', 'reason': str(error)}), file=sys.stderr)
         return 1
